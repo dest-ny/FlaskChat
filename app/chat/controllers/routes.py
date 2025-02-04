@@ -4,7 +4,6 @@ from flask import render_template, session, url_for, request, redirect
 @app.route("/")
 def index():
     if 'nombre' in session:
-        
         return render_template('index.html', nombre = session["nombre"])
     else:
         return redirect(url_for('login'))
