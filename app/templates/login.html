@@ -1,24 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlaskChat</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
-</head>
-<body>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <ul class=flashes>
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-    {% endif %}
-    {% endwith %}
-    <form action="/login" method="POST">
-        <input type="text" id="nombre" name="nombre"><br><br>
-        <input type="submit" value="Submit">
-    </form>
-</body>
-</html>
+{%extends "base.html"%}
+
+{%block title%}Login{%endblock title%}
+
+{%block maintitle%}FlaskChat{%endblock maintitle%}
+{%block mainsubtitle%}LOGIN{%endblock mainsubtitle%}
+{%block form_action%}/login{%endblock form_action%}
+{%block form_method%}POST{%endblock form_method%}
+{%block inputfields%}
+<span class="labelfor">Nombre: </span>
+<input type="text" id="nombre" name="nombre" class="form-input">
+<span class="labelfor">Contraseña: </span>
+<input type="password" name="pass" class="form-input">
+{%endblock inputfields%}
+{%block buttons%}
+<input type="submit" value="ENTRAR" class="btn">
+<a href="{{url_for('register')}}" class="btn">REGISTRO</a>
+{%endblock buttons%}

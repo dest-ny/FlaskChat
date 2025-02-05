@@ -2,7 +2,7 @@ from app import mysql
 from flask import g
 
 def getConnection():
-    if 'conn' not in g:
+    if 'db' not in g:
         g.db = mysql.get_db()
     
     return g.db
@@ -21,6 +21,6 @@ def db_insert(sql, args):
         conn.commit()
     except Exception as e:
         conn.rollback()
-        print("Database Insertion error: ", e)
+        print("Database insertion error: ", e)
     finally:
         closeConnection()

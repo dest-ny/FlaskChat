@@ -1,4 +1,121 @@
 * {
     background-color: #f8f8f8;
     color: #2e2e2e;
+    margin: 0;
+    padding: 0;
+}
+
+.main-container{
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.title-container{
+    background-color: hsla(204, 100%, 50%, 0.5);
+    border-radius: 25px 25px 0 0;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    text-align: center;
+}
+
+.title-container .flasktitle {
+    font-family: 'Roboto', serif;
+    font-size: 40px;
+    font-weight: bold;
+    background-color: transparent;
+    color: #fff;
+}
+
+.title-container .flasksubtitle {
+    font-family: 'Roboto', serif;
+    font-size: 24px;
+    font-weight: bold;
+    background-color: transparent;
+    color: rgba(0, 0, 0, 0.5);
+    text-transform: uppercase;
+}
+.window-container{
+    height: 400px;
+    width: 400px;
+    margin: 0;
+    padding: 0;
+    border-radius: 50px;
+    border: 1px solid black;
+}
+
+.form{
+    background-color: transparent;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+.form .form-buttons{
+    margin: 20px;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    gap: 10px;
+}
+.form .btn{
+    background-color: hsla(204, 100%, 50%, 0.5);
+    border-radius: 8px;
+    text-decoration: none;
+    border-width: 0;
+    color: #333333;
+    cursor: pointer;
+    display: inline-block;
+    font-family: 'Roboto', serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 10px 0px;
+    text-align: center;
+    transition: all 200ms;
+    vertical-align: baseline;
+    white-space: nowrap;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    min-width: 110px;
+    margin: 5px;
+}
+
+.form .btn:hover{
+    background-color: hsla(204, 100%, 50%, 1);
+    font-size: 16px;
+}
+
+.form .form-inputs{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form .labelfor{
+    font-family: 'Roboto', serif;
+    background-color: transparent;
+    font-weight: bold;
+}
+.form .form-input{
+    border: 1px solid black;
+    width: 100%;
+    font-family: 'Roboto', serif;
+    font-size: 18px;
+}
+
+.form .form-input:focus{
+    outline: 1px solid black;
 }

@@ -31,3 +31,7 @@ def logout():
         return redirect(url_for('login'))
     else:
         return redirect(url_for('login'))
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    return "register"

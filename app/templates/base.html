@@ -1,11 +1,36 @@
-<!doctype html>
-<title>{% block title %}{% endblock %}</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<nav>
-  <h1>Flaskr</h1>
-</nav>
-<section class="content">
-  <header>
-    {% block header %}{% endblock %}
-  </header>
-</section>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <title>FlaskChat - {% block title %}{% endblock title %}</title>
+</head>
+<body>
+  <div class="main-container">
+    <div class="title-container">
+      <span class="flasktitle">{%block maintitle%}{%endblock maintitle%}</span>
+      <span class="flasksubtitle">{%block mainsubtitle%}{%endblock mainsubtitle%}</span>
+    </div>
+    <div class="window-container">
+      <form class="form" action="{%block form_action%}{%endblock form_action%}" method="{%block form_method%}{%endblock form_method%}">
+        <div class="form-inputs">
+          {%block inputfields%}{%endblock inputfields%}
+          <!--<span class="labelfor">Nombre: </span>
+          <input type="text" class="form-input">
+          <span class="labelfor">Contraseña: </span>
+          <input type="password" class="form-input">-->
+        </div>
+        <div class="form-buttons">
+          {%block buttons%}{%endblock buttons%}
+          <!--<button class="btn">ENTRAR</button>
+          <button class="btn">REGISTRO</button>-->
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
