@@ -1,4 +1,4 @@
-from app import mysql
+from app import mysql, flask_bcrypt
 from flask import g
 
 def getConnection():
@@ -24,3 +24,20 @@ def db_insert(sql, args):
         print("Database insertion error: ", e)
     finally:
         closeConnection()
+
+def validate_credentials(user, password):
+    try:
+        conn = getConnection()
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users WHERE name = %s", (user,))
+        result = cur.fetchone()
+        if result:
+            if flask_bcrypt.check_password_hash(result['password'], password):
+                return True
+        return False
+    except Exception as e:
+        print(f"Error validando la contraseña para {user}: ", e)
+        return False
+    finally:
+        closeConnection()
+

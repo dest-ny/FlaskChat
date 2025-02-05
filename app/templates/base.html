@@ -11,6 +11,13 @@
 </head>
 <body>
   <div class="main-container">
+    {%if error %}
+    <div class="error">
+      <div class="error-msg">
+        {{error}}
+      </div>
+    </div>
+    {%endif%}
     <div class="title-container">
       <span class="flasktitle">{%block maintitle%}{%endblock maintitle%}</span>
       <span class="flasksubtitle">{%block mainsubtitle%}{%endblock mainsubtitle%}</span>
