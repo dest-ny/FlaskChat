@@ -1,5 +1,6 @@
 from app import socketio
 from flask import session
+from app.chat.models.db import * 
 
 from . import USUARIOS
 
@@ -25,6 +26,7 @@ def conectado():
     
 @socketio.on("mensaje")
 def recibir_mensaje(msg):
+    db_insert("INSERT INTO messages(sender, content) VALUES (%s, %s)", (1, msg))
     socketio.emit("mensaje", {
         'msg':msg,
         'sender':session['nombre']

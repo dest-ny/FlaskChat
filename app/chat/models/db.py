@@ -3,12 +3,24 @@ from flask import g
 
 def getConnection():
     if 'conn' not in g:
-        g['conn'] = mysql.connect()
+        g.db = mysql.get_db()
     
-    return g['conn']
+    return g.db
 
 def closeConnection(e=None):
-    conn = g.pop('conn', None)
+    conn = g.pop('db', None)
     
     if conn is not None:
         conn.close()
+
+def db_insert(sql, args):
+    try:
+        conn = getConnection()
+        cur = conn.cursor()
+        cur.execute(sql, args)
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        print("Database Insertion error: ", e)
+    finally:
+        closeConnection()

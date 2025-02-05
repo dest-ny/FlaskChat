@@ -1,6 +1,5 @@
 from app import app
 from flask import render_template, session, url_for, request, redirect, flash
-from models.db import *
 
 from . import USUARIOS
 
@@ -22,8 +21,6 @@ def login():
             pass
         else:
             session['nombre'] = request.form['nombre']
-            conn = getConnection()
-            conn.getCursor().execute("")
             return redirect(url_for('index'))
     return render_template('login.html')
 
