@@ -1,8 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
 * {
-    background-color: #f8f8f8;
+    background-color: transparent;
     color: #2e2e2e;
     margin: 0;
     padding: 0;
+    font-family: 'Roboto', serif;
+}
+
+body{
+    background-color: #f8f8f8;
 }
 
 .main-container{
@@ -138,4 +145,123 @@
     font-weight: 500;
     padding: 15px;
     text-transform: uppercase;
+}
+
+.success{
+    top: 0;
+    width: 100vw;
+    position: absolute;
+    background-color: rgba(0, 255, 136, 0.4);
+    text-align: center;
+}
+
+.success .success-msg{
+    background-color: transparent;
+    font-family: 'Roboto', sans-serif;
+    color: black;
+    font-size: 25px;
+    font-weight: 500;
+    padding: 15px;
+    text-transform: uppercase;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 160px;
+    background-color: hsla(204, 100%, 50%, 1);;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    top:-5px;
+    right: 105%;
+}
+ 
+.tooltiptext ul{
+    list-style: none;
+    text-align: left;
+    background-color: transparent;
+    padding: 5px 5px;
+}
+.tooltiptext ul li{
+    background-color: transparent;
+    color: rgba(0, 0, 0, 0.645);
+    font-family: 'Roboto', serif;
+}
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.chat__wrapper{
+    width: 900px;
+    height: 700px;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid black;
+    border-radius: 25px;
+    padding: 15px;
+}
+.chat__wrapper .chat__sala{
+    height: 100%;
+    width: 100%;
+    background-color: transparent;
+    overflow: scroll;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+.chat__wrapper .chat__inputs{
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    background-color: transparent;
+}
+
+.chat__listamensajes{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.chat__msg {
+    display: flex;
+    flex-direction: column;
+    overflow-wrap: break-word;
+    margin-right: 5px;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: default;
+}
+
+.chat__msg:hover{
+    background-color: #3333333f;
+}
+
+.chat__inputs{
+    background-color: #2e2e2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 25px;
+}
+
+.chat__notif{
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+.chat_join{
+    background-color: rgba(45, 250, 45, 0.5);
+}
+
+.chat_leave{
+    background-color: rgba(255, 25, 25, 0.5);
 }

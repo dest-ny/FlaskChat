@@ -1,34 +1,20 @@
 var socket = io()
 
-const chat = document.getElementById("chat")
-const formChat = document.getElementById("formChat")
+const formChat = document.getElementById("chat__form")
+const chat_listamensajes = document.getElementById("chat_listamensajes")
 const mensajeInput = document.getElementById("mensajeInput")
-const usrList = document.getElementById("usrList")
-
-function removeOptions(selectElement) {
-    var i, L = selectElement.options.length - 1;
-    for(i = L; i >= 0; i--) {
-       selectElement.remove(i);
-    }
-}
 
 socket.on('estado', function(data){
-    
-    chat.textContent += data['nombre'] + " " + data['msg'] + "\n"
-    let arr = data['usuarios']
-    console.log(arr)
-    removeOptions(usrList)
-    arr.forEach(element => {
-        console.log(element)
-        let opcion = document.createElement("option")
-        opcion.text = element
-        usrList.add(opcion)
-    });
+    //chat.textContent += data['nombre'] + " " + data['msg'] + "\n"
+    //let arr = data['usuarios']
+    chat_listamensajes.innerHTML += data
+    scrollChat()
 });
 
 socket.on('mensaje', function(data){
     console.log("Mensaje recibido!")
-    chat.value += `<${data['sender']}> ${data['msg']}\n`
+    chat_listamensajes.innerHTML += data
+    scrollChat()
 });
 
 if(formChat){
@@ -45,4 +31,19 @@ if(formChat){
         socket.emit("mensaje", mensajeInput.value)
         mensajeInput.value = ""
     });
+}
+
+function scrollChat(){
+    const sala = document.getElementById("chat_sala")
+    const scroll = sala.scrollHeight;
+
+    const scrollBottom = () => {
+        const scrollOptions = {
+            top: scroll,
+            behaviour: "smoorth",
+        };
+        sala.scrollTo(scrollOptions);
+    }
+
+    setTimeout(scrollBottom, 100);
 }

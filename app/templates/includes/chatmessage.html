@@ -1,0 +1,14 @@
+{%if mensaje%}
+
+{%if not mensaje.sender%}
+<div class="chat__notif {{mensaje.category}}">
+    <span><strong><span>{{mensaje.name}}</span></strong> <span>{{mensaje.content}}</span></span>
+</div>
+{%else%}
+<div class="chat__msg {% if mensaje.name == session['nombre'] %}chat__mymsg{%endif%}">
+    <span>{{mensaje.name}}</span> <span>{{mensaje.content}}</span>
+    <span>{{mensaje.fecha_formateada}}</span>
+</div>
+{%endif%}
+
+{%endif%}
