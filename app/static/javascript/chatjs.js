@@ -11,14 +11,43 @@ socket.on('estado', function(data){
     scrollChat()
 });
 
+socket.on('disconnect', function(){
+    alert("Desconectado del chat!")
+    location.reload()
+})
+
 socket.on('mensaje', function(data){
     chat_listamensajes.innerHTML += data
     scrollChat()
 });
 
 socket.on('usuarios_online', function(data){
-    const user_container = document.getElementById("users_container")
-    user_container.innerHTML = data
+    const users_wrapper = document.getElementById("users_wrapper")
+    const users_count = document.getElementById("users_online")
+    let usuarios = data;
+    let nombre = document.body.dataset.name || ""
+    let role = parseInt(document.body.dataset.role || "0");
+
+    users_count.textContent=usuarios.length
+    users_wrapper.innerHTML = ""
+    usuarios.forEach(usuario => {
+        let li = document.createElement("li")
+        li.innerHTML = `
+        <div class="user__element">
+            <div class="user__identifier">
+                <span class="username">${usuario.name}</span>
+                ${usuario.role == 10 ? `
+                    <span class="decorator">⭐</span>
+                    ` : ""}
+            </div>
+            ${role >= 5 && usuario.name != nombre? `
+            <div class="user__buttons">
+                <button class="ban-button">VETAR</button>
+            </div>
+            ` : ""}
+        </div> `;
+        users_wrapper.appendChild(li);
+    });
 });
 
 if(formChat){

@@ -280,6 +280,7 @@ body{
     text-align: center;
     background-color: rgba(0, 153, 255, 0.1);
     transition: all 100ms ease;
+    overflow: auto;
 }
 .users__wrapper{
     height: 100%;
@@ -288,24 +289,25 @@ body{
 }
 
 .user__element{
-    padding: 20px;
-    min-height: 50px;
+    position: relative;
+    padding: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
+    flex-direction: row;
+    border: 2px solid #000;
 }
 
 .users__container ul{
     margin: 0;
     padding: 0;
     list-style: none;
-    background-color: rgba(0, 153, 255, 0.123);
 }
 
 .users__container li{
-    cursor: pointer;
+    cursor: default;
     scroll-snap-align: start;
+    margin: 5px;
 }
 
 .users__container li:hover{
@@ -313,15 +315,21 @@ body{
 }
 
 .users__container .user__buttons{
-    margin-top: 5px;
+    position: absolute;
+    right: 5px;
 }
 
-.users__container button{
-    border: none;
+.users__container .user__buttons button{
     border: 1px solid black;
     padding: 5px;
+    cursor: pointer;
 }
 
-.users__container button:hover{
+.users__container .user__buttons button:hover{
     background-color: #97979734;
+}
+
+.users__container .user__buttons button:active{
+    background-color: #97979712;
+    box-shadow: red -2px 2px;
 }

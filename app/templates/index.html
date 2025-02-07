@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
 </head>
-<body>
+<body data-role="{{session['role']}}" data-name="{{session['nombre']}}">
     <div class="main-container">
         <div class="title-container">
             <span class="flasktitle">FlaskChat</span>
@@ -34,11 +34,11 @@
                     </form>
                 </div>
             </div>
-            {%if usuarios%}
             <div class="users__container" id="users_container">
-                {%include "includes/users.html"%}
+                <span>Usuarios conectados: <span id="users_online">0</span></span>
+                <ul id="users_wrapper">
+                </ul>
             </div>
-            {%endif%}
         </div>
     </div>
 </body>

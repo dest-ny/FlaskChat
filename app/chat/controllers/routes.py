@@ -2,12 +2,10 @@ from app import app
 from flask import render_template, session, url_for, request, redirect, flash
 from app.chat.models.db import *
 
-from . import USUARIOS
-
 @app.route("/")
 def chat():
     if 'nombre' in session:
-        return render_template('index.html', usuarios=get_usuarios_online(), lista_mensajes=get_messages())
+        return render_template('index.html', lista_mensajes=get_messages())
     else:
         return redirect(url_for('login'))
     
