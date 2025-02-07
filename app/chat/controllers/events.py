@@ -11,8 +11,8 @@ def conectado():
         'category' : "chat_join",
         'name' : f"{session['nombre']}",
         'content': "se ha unido a la sala!",
-        'usuarios': USUARIOS
         }
+    set_online_status(session['nombre'], True)
     socketio.emit('estado', render_template('includes/chatmessage.html', mensaje=mensaje))
     
 @socketio.on('disconnect')
@@ -22,8 +22,8 @@ def conectado():
         'category' : "chat_leave",
         'name' : f"{session['nombre']}",
         'content': "ha salido de la sala!",
-        'usuarios': USUARIOS
         }
+    set_online_status(session['nombre'], False)
     socketio.emit('estado', render_template('includes/chatmessage.html', mensaje=mensaje))
     
 @socketio.on("mensaje")

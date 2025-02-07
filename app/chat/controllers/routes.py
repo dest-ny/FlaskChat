@@ -7,7 +7,7 @@ from . import USUARIOS
 @app.route("/")
 def chat():
     if 'nombre' in session:
-        return render_template('index.html', nombre = session["nombre"], lista_mensajes=get_messages())
+        return render_template('index.html', usuarios=get_usuarios_online(), lista_mensajes=get_messages())
     else:
         return redirect(url_for('login'))
     
@@ -19,9 +19,10 @@ def login():
     if request.method == 'POST':
         nombre = request.form['nombre']
         password = request.form['pass']
-        if(validate_credentials(nombre, password)):
-            print("true")
+        result = validate_credentials(nombre, password)
+        if(result):
             session['nombre'] = nombre
+            session['role'] = result['role']
             return redirect(url_for('chat'))
         else:
             error = "Nombre o contraseña incorrectos"

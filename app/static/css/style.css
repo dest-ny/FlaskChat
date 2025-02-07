@@ -207,6 +207,7 @@ body{
     border: 2px solid black;
     border-radius: 25px;
     padding: 15px;
+    overflow: hidden;
 }
 .chat__wrapper .chat__sala{
     height: 100%;
@@ -264,4 +265,61 @@ body{
 
 .chat_leave{
     background-color: rgba(255, 25, 25, 0.5);
+}
+
+.users__container{
+    height: 498px;
+    position: absolute;
+    top: 50;
+    left: 0;
+    text-align: center;
+}
+
+.users__wrapper{
+    height: 100%;
+    border: 2px solid #37392e;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 200px;
+    margin-left: 5px;
+}
+
+.user__element{
+    padding: 20px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.users__container ul{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-color: rgba(0, 153, 255, 0.123);
+}
+
+.users__container li{
+    cursor: pointer;
+    border-top: 1px solid #cccccc;
+    scroll-snap-align: start;
+}
+
+.users__container li:hover{
+    background-color: rgba(0, 153, 255, 0.281);
+}
+
+.users__container .user__buttons{
+    margin-top: 5px;
+}
+
+.users__container button{
+    border: none;
+    border: 1px solid black;
+    padding: 5px;
+}
+
+.users__container button:hover{
+    background-color: #97979734;
 }

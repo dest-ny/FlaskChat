@@ -33,11 +33,11 @@ def validate_credentials(user, password):
         result = cur.fetchone()
         if result:
             if flask_bcrypt.check_password_hash(result['password'], password):
-                return True
-        return False
+                return result
+        return {}
     except Exception as e:
         print(f"Error validando la contraseña para {user}: ", e)
-        return False
+        return {}
 
 def register_user(user, password):
     hashedpw = flask_bcrypt.generate_password_hash(password)
@@ -76,3 +76,25 @@ def get_messages():
             return {}
     except Exception as e:
         print("Error sacando los mensajes: ", e)
+
+def get_usuarios_online():
+    try:
+        conn = mysql.get_db()
+        cur = conn.cursor()
+        cur.execute("SELECT id, name, online, role FROM users WHERE online = %s", (True,))
+        res = cur.fetchall()
+        if res:
+            return res
+        else:
+            return {}
+    except Exception as e:
+        print("Error en la consulta de usuarios online: ", e)
+
+def set_online_status(name, status):
+    try:
+        conn = mysql.get_db()
+        cur = conn.cursor()
+        cur.execute("UPDATE users SET online = %s WHERE name = %s", (status, name))
+        conn.commit()
+    except Exception as e:
+        print("Error cambiando el estado del usuario: ", e)

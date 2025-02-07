@@ -11,7 +11,7 @@
     <div class="main-container">
         <div class="title-container">
             <span class="flasktitle">FlaskChat</span>
-            <span class="flasksubtitle">@{{nombre}}</span>
+            <span class="flasksubtitle">@{{session['nombre']}}</span>
         </div>
         <div class="chat__wrapper">
             <div class="chat__sala" id="chat_sala">              
@@ -25,6 +25,20 @@
                     {%endif%}
                 </div>
             </div>
+            {%if usuarios%}
+            <div class="users__container">
+                <span>Usuarios conectados: <span id="users_online">{{usuarios|length}}</span></span>
+                <div class="users__wrapper">
+                    <ul>
+                        {%for usuario in usuarios%}
+                            {%with usuario=usuario%}
+                                {% include "includes/user.html"%}
+                            {%endwith%}
+                        {%endfor%}
+                    </ul>
+                </div>
+            </div>
+            {%endif%}
             <div class="chat__inputs">
                 <form id="chat__form">
                     <input id="mensajeInput" size="80" autocomplete="off">
