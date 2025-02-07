@@ -17,13 +17,21 @@ def login():
     if request.method == 'POST':
         nombre = request.form['nombre']
         password = request.form['pass']
-        result = validate_credentials(nombre, password)
-        if(result):
-            session['nombre'] = nombre
-            session['role'] = result['role']
-            return redirect(url_for('chat'))
-        else:
-            error = "Nombre o contraseña incorrectos"
+        logueado = False
+        for usuario in get_usuarios_online():
+            if usuario['name'] == nombre:
+                logueado = True
+                break
+        if logueado:
+            error = "usuario ya logueado"
+        else:    
+            result = validate_credentials(nombre, password)
+            if(result):
+                session['nombre'] = nombre
+                session['role'] = result['role']
+                return redirect(url_for('chat'))
+            else:
+                error = "Nombre o contraseña incorrectos"
     return render_template('login.html', error=error)
 
 @app.route("/logout")

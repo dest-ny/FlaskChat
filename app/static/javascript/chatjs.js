@@ -38,11 +38,18 @@ socket.on('usuarios_online', function(data){
                 <span class="username">${usuario.name}</span>
                 ${usuario.role == 10 ? `
                     <span class="decorator">⭐</span>
-                    ` : ""}
+                    ` : 
+                    usuario.role == 5 ? `
+                    <span class="decorator">🛡️</span>
+                    ` : ""
+                }
             </div>
-            ${role >= 5 && usuario.name != nombre? `
+            ${role >= 5 && usuario.name != nombre && usuario.role < role ? `
             <div class="user__buttons">
-                <button class="ban-button">VETAR</button>
+                <button class="ban-button">5 MIN</button>
+                ${role >= 10 && usuario.name != nombre ? `
+                <button class="ban-button">BAN</button>
+                ` : ""}
             </div>
             ` : ""}
         </div> `;
@@ -54,7 +61,6 @@ if(formChat){
     formChat.addEventListener("submit", async (event) =>{
         event.preventDefault()
         if(mensajeInput && mensajeInput.value.trim() === "") {
-            console.log("Mensaje inválido!")
             mensajeInput.style.border = "1px solid rgb(255, 47, 0)"
             return
         }
@@ -79,4 +85,8 @@ function scrollChat(){
     }
 
     setTimeout(scrollBottom, 100);
+}
+
+function ban_user(data){
+
 }
