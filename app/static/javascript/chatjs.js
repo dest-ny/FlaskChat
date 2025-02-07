@@ -12,9 +12,13 @@ socket.on('estado', function(data){
 });
 
 socket.on('mensaje', function(data){
-    console.log("Mensaje recibido!")
     chat_listamensajes.innerHTML += data
     scrollChat()
+});
+
+socket.on('usuarios_online', function(data){
+    const user_container = document.getElementById("users_container")
+    user_container.innerHTML = data
 });
 
 if(formChat){

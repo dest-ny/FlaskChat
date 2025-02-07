@@ -305,7 +305,6 @@ body{
 
 .users__container li{
     cursor: pointer;
-    border-top: 1px solid #cccccc;
     scroll-snap-align: start;
 }
 

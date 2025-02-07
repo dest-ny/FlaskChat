@@ -35,17 +35,8 @@
                 </div>
             </div>
             {%if usuarios%}
-            <div class="users__container">
-                <span>Usuarios conectados: <span id="users_online">{{usuarios|length}}</span></span>
-                <div class="users__wrapper">
-                    <ul>
-                        {%for usuario in usuarios%}
-                            {%with usuario=usuario%}
-                                {% include "includes/user.html"%}
-                            {%endwith%}
-                        {%endfor%}
-                    </ul>
-                </div>
+            <div class="users__container" id="users_container">
+                {%include "includes/users.html"%}
             </div>
             {%endif%}
         </div>
