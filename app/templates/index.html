@@ -13,16 +13,25 @@
             <span class="flasktitle">FlaskChat</span>
             <span class="flasksubtitle">@{{session['nombre']}}</span>
         </div>
-        <div class="chat__wrapper">
-            <div class="chat__sala" id="chat_sala">              
-                <div class="chat__listamensajes" id="chat_listamensajes">
-                    {%if lista_mensajes|length > 0%}
-                        {%for mensaje in lista_mensajes%}
-                            {%with mensaje=mensaje%}
-                                {% include "includes/chatmessage.html"%}
-                            {%endwith%}
-                        {%endfor%}
-                    {%endif%}
+        <div class="chat__layout">
+            <div class="chat__wrapper">
+                <div class="chat__sala" id="chat_sala">              
+                    <div class="chat__listamensajes" id="chat_listamensajes">
+                        {%if lista_mensajes|length > 0%}
+                            {%for mensaje in lista_mensajes%}
+                                {%with mensaje=mensaje%}
+                                    {% include "includes/chatmessage.html"%}
+                                {%endwith%}
+                            {%endfor%}
+                        {%endif%}
+                    </div>
+                </div>
+                <div class="chat__inputs">
+                    <form id="chat__form">
+                        <input id="mensajeInput" size="40" autocomplete="off">
+                        <input type="submit" value="ENVIAR MENSAJE">
+                        <a href="{{url_for('logout')}}">SALIR</a>
+                    </form>
                 </div>
             </div>
             {%if usuarios%}
@@ -39,13 +48,6 @@
                 </div>
             </div>
             {%endif%}
-            <div class="chat__inputs">
-                <form id="chat__form">
-                    <input id="mensajeInput" size="80" autocomplete="off">
-                    <input type="submit" value="ENVIAR MENSAJE">
-                    <a href="{{url_for('logout')}}">SALIR</a>
-                </form>
-            </div>
         </div>
     </div>
 </body>
