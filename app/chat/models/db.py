@@ -90,6 +90,25 @@ def get_usuarios_online():
     except Exception as e:
         print("Error en la consulta de usuarios online: ", e)
 
+def get_usuario(id=None, name=None):
+    try:
+        conn = mysql.get_db()
+        cur = conn.cursor()
+        if id:
+            cur.execute("SELECT id, name, online, role, banned_until FROM users WHERE id = %s", (id,))
+        elif name:
+            cur.execute("SELECT id, name, online, role, banned_until FROM users WHERE name = %s", (name,))
+        else:
+            return
+        
+        res = cur.fetchone()
+        if res:
+            return res
+        else:
+            return {}
+    except Exception as e:
+        print("Error en la consulta de usuario: ", e)
+
 def set_online_status(name, status):
     try:
         conn = mysql.get_db()
@@ -98,3 +117,12 @@ def set_online_status(name, status):
         conn.commit()
     except Exception as e:
         print("Error cambiando el estado del usuario: ", e)
+        
+def db_timeout_user(id, time):
+    try:
+        conn = mysql.get_db()
+        cur = conn.cursor()
+        cur.execute("UPDATE users SET banned_until = %s WHERE id = %s", (time, id))
+        conn.commit()
+    except Exception as e:
+        print("Error actualizando el banned_until en la tabla de usuarios: ", e)

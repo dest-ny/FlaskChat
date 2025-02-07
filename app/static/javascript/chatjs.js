@@ -36,19 +36,19 @@ socket.on('usuarios_online', function(data){
         <div class="user__element">
             <div class="user__identifier">
                 <span class="username">${usuario.name}</span>
-                ${usuario.role == 10 ? `
+                ${usuario.role >= 10 ? `
                     <span class="decorator">⭐</span>
                     ` : 
-                    usuario.role == 5 ? `
+                    usuario.role >= 5 ? `
                     <span class="decorator">🛡️</span>
                     ` : ""
                 }
             </div>
             ${role >= 5 && usuario.name != nombre && usuario.role < role ? `
             <div class="user__buttons">
-                <button class="ban-button">5 MIN</button>
+                <button class="user_button" onclick="timeout_user(${usuario.id})">TIMEOUT</button>
                 ${role >= 10 && usuario.name != nombre ? `
-                <button class="ban-button">BAN</button>
+                <button class="user_button">BAN</button>
                 ` : ""}
             </div>
             ` : ""}
@@ -57,6 +57,15 @@ socket.on('usuarios_online', function(data){
     });
 });
 
+socket.on("force_disconnect", function(){
+    socket.disconnect()
+})
+
+socket.on("user_timeout", function(usuario){
+    if(usuario.nombre === document.body.dataset.name){
+        socket.disconnect()
+    }
+})
 if(formChat){
     formChat.addEventListener("submit", async (event) =>{
         event.preventDefault()
@@ -87,6 +96,12 @@ function scrollChat(){
     setTimeout(scrollBottom, 100);
 }
 
-function ban_user(data){
+function timeout_user(userId){
+    let duration = prompt("Indica la duración del timeout (minutos): ", '60')
+    if(duration === null) return;
+    duration = parseInt(duration)
 
+    if(isNaN(duration) || duration <= 0) return;
+
+    socket.emit("timeout_user", {"user" : userId, "duration": duration})
 }
