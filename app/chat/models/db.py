@@ -1,128 +1,128 @@
 from app import mysql, flask_bcrypt
+from contextlib import contextmanager
+import logging
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-def db_insert(sql, args):
+@contextmanager
+def get_db_cursor():
+    conn = None
+    cur = None
     try:
         conn = mysql.get_db()
         cur = conn.cursor()
-        cur.execute(sql, args)
-        conn.commit()
+        yield cur
     except Exception as e:
-        print("Database insertion error: ", e)
-        conn.rollback()
+        logger.error(f"Database error: {e}", exc_info=True)
+        if conn:
+            conn.rollback()
+        raise
+
+def db_insert(sql, args):
+    try:
+        with get_db_cursor() as cur:
+            cur.execute(sql, args)
+            cur.connection.commit()
+    except Exception as e:
+        logger.error(f"Database insertion error: {e}", exc_info=True)
 
 
 def username_exists(user):
     try:
-        conn = mysql.get_db()
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM users WHERE name = %s", (user,))
-        result = cur.fetchone()
-        if result:
-                return True
-        return False
+        with get_db_cursor() as cur:
+            cur.execute("SELECT * FROM users WHERE name = %s", (user,))
+            result = cur.fetchone()
+            return bool(result)
     except Exception as e:
-        print(f"Error comprobando si {user} existe: ", e)
+        logger.error(f"Error checking if {user} exists: {e}", exc_info=True)
         return False
 
 def validate_credentials(user, password):
     try:
-        conn = mysql.get_db()
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM users WHERE name = %s", (user,))
-        result = cur.fetchone()
-        if result:
-            if flask_bcrypt.check_password_hash(result['password'], password):
+        with get_db_cursor() as cur:
+            cur.execute("SELECT * FROM users WHERE name = %s", (user,))
+            result = cur.fetchone()
+            if result and flask_bcrypt.check_password_hash(result['password'], password):
                 return result
-        return {}
+            logger.warning(f"Validation failed for user {user}")
+            return {}
     except Exception as e:
-        print(f"Error validando la contraseña para {user}: ", e)
+        logger.error(f"Error validating password for {user}: {e}", exc_info=True)
         return {}
 
 def register_user(user, password):
-    hashedpw = flask_bcrypt.generate_password_hash(password)
+    hashedpw = flask_bcrypt.generate_password_hash(password).decode('utf-8')
     db_insert("INSERT INTO users(name, password) VALUES (%s, %s)", (user, hashedpw))
 
 def store_message(user, message):
     try:
-        conn = mysql.get_db()
-        cur = conn.cursor()
-        cur.execute("SELECT id FROM users WHERE name = %s", (user,))
-        res = cur.fetchone()
-        if res:
-            cur.execute("INSERT INTO messages (sender, content) VALUES (%s, %s)", (res['id'], message))
-            conn.commit()
-            cur.execute("SELECT sender, name, content, DATE_FORMAT(timestamp, '%d-%m-%Y %I:%i %p') AS fecha_formateada FROM users JOIN messages on(users.id = sender) WHERE messages.id = LAST_INSERT_ID()")
-            message = cur.fetchone()
-            if message:
-                return message
+        with get_db_cursor() as cur:
+            cur.execute("SELECT id FROM users WHERE name = %s", (user,))
+            res = cur.fetchone()
+            if res:
+                cur.execute("INSERT INTO messages (sender, content) VALUES (%s, %s)", (res['id'], message))
+                cur.connection.commit()
+                cur.execute("SELECT sender, name, content, DATE_FORMAT(timestamp, '%k:%i | %d-%m-%Y') AS fecha_formateada FROM users JOIN messages on(users.id = sender) WHERE messages.id = LAST_INSERT_ID()")
+                message = cur.fetchone()
+                if message:
+                    return message
     except Exception as e:
-        print("Error guardando el mensaje: ", e)
-        conn.rollback()
+        logger.error(f"Error saving message: {e}", exc_info=True)
+        # No need to call rollback here; it's handled in the context manager
     return {}
-
 
 def get_messages():
     try:
-        conn = mysql.get_db()
-        cur = conn.cursor()
-        cur.execute("SELECT sender, content, name, DATE_FORMAT(timestamp, '%k:%i | %d-%m-%Y') AS fecha_formateada FROM users JOIN messages on(users.id=sender) ORDER BY messages.id ASC")
-        res = cur.fetchall()
-        if res:
-            for r in res:
-                r['content'] = r['content'].decode('utf-8')
-            return res
-        else:
+        with get_db_cursor() as cur:
+            cur.execute("SELECT sender, content, name, DATE_FORMAT(timestamp, '%k:%i | %d-%m-%Y') AS fecha_formateada FROM users JOIN messages on(users.id=sender) ORDER BY messages.id ASC")
+            res = cur.fetchall()
+            if res:
+                for r in res:
+                    r['content'] = r['content'].decode('utf-8')
+                return res
             return {}
     except Exception as e:
-        print("Error sacando los mensajes: ", e)
+        logger.error(f"Error fetching messages: {e}", exc_info=True)
+        return {}
 
 def get_usuarios_online():
     try:
-        conn = mysql.get_db()
-        cur = conn.cursor()
-        cur.execute("SELECT id, name, online, role FROM users WHERE online = %s", (True,))
-        res = cur.fetchall()
-        if res:
-            return res
-        else:
-            return {}
+        with get_db_cursor() as cur:
+            cur.execute("SELECT id, name, online, role FROM users WHERE online = %s", (True,))
+            res = cur.fetchall()
+            return res if res else {}
     except Exception as e:
-        print("Error en la consulta de usuarios online: ", e)
+        logger.error(f"Error fetching online users: {e}", exc_info=True)
+        return {}
 
 def get_usuario(id=None, name=None):
     try:
-        conn = mysql.get_db()
-        cur = conn.cursor()
-        if id:
-            cur.execute("SELECT id, name, online, role, banned_until FROM users WHERE id = %s", (id,))
-        elif name:
-            cur.execute("SELECT id, name, online, role, banned_until FROM users WHERE name = %s", (name,))
-        else:
-            return
-        
-        res = cur.fetchone()
-        if res:
-            return res
-        else:
-            return {}
+        with get_db_cursor() as cur:
+            if id:
+                cur.execute("SELECT id, name, online, role, banned_until FROM users WHERE id = %s", (id,))
+            elif name:
+                cur.execute("SELECT id, name, online, role, banned_until FROM users WHERE name = %s", (name,))
+            else:
+                return {}
+            res = cur.fetchone()
+            return res if res else {}
     except Exception as e:
-        print("Error en la consulta de usuario: ", e)
+        logger.error(f"Error fetching user: {e}", exc_info=True)
+        return {}
 
 def set_online_status(name, status):
     try:
-        conn = mysql.get_db()
-        cur = conn.cursor()
-        cur.execute("UPDATE users SET online = %s WHERE name = %s", (status, name))
-        conn.commit()
+        with get_db_cursor() as cur:
+            cur.execute("UPDATE users SET online = %s WHERE name = %s", (status, name))
+            cur.connection.commit()
     except Exception as e:
-        print("Error cambiando el estado del usuario: ", e)
+        logger.error(f"Error updating user status: {e}", exc_info=True)
         
 def db_timeout_user(id, time):
     try:
-        conn = mysql.get_db()
-        cur = conn.cursor()
-        cur.execute("UPDATE users SET banned_until = %s WHERE id = %s", (time, id))
-        conn.commit()
+        with get_db_cursor() as cur:
+            cur.execute("UPDATE users SET banned_until = %s WHERE id = %s", (time, id))
+            cur.connection.commit()
     except Exception as e:
-        print("Error actualizando el banned_until en la tabla de usuarios: ", e)
+        logger.error(f"Error updating banned_until: {e}", exc_info=True)
