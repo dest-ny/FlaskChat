@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-
+:root{
+    --_background: hsla(204, 100%, 50%, 0.5);
+}
 * {
     background-color: transparent;
     color: #2e2e2e;
@@ -77,7 +79,7 @@ body{
     gap: 10px;
 }
 .form .btn{
-    background-color: hsla(204, 100%, 50%, 0.5);
+    background-color: var(--_background);
     border-radius: 8px;
     text-decoration: none;
     border-width: 0;
@@ -173,7 +175,7 @@ body{
 .tooltip .tooltiptext {
     visibility: hidden;
     width: 160px;
-    background-color: hsla(204, 100%, 50%, 1);;
+    background-color: hsla(204, 100%, 50%, 1);
     color: #fff;
     text-align: center;
     padding: 5px 0;
@@ -226,11 +228,59 @@ body{
 
 .chat__wrapper .chat__inputs{
     display: flex;
-    justify-content: center;
-    gap: 5px;
-    background-color: transparent;
+    gap: 10px; 
+    padding: 10px;
+    background-color: #f9f9f9; 
+}
+#mensajeInput {
+    flex: 1;
+    padding: 10px 15px;
+    border: 2px solid var(--_background); 
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none; 
+    transition: all 0.3s ease;
+}
+#mensajeInput:focus {
+    border-color: #0056b3 !important; 
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+#enviarMensajeSubmit{
+    padding: 10px 20px;
+    background-color: var(--_background);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+#enviarMensajeSubmit:hover{
+    background-color: #0056b3;
+    transform: translateY(-2px)
+}
+#enviarMensajeSubmit:active{
+    transform: translateY(0)
+}
+#salirLink {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #dc3545;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+#salirLink:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
 }
 
+#salirLink:active {
+    transform: translateY(0);
+}
 .chat__listamensajes{
     display: flex;
     flex-direction: column;
@@ -263,14 +313,24 @@ body{
     display: flex;
     justify-content: center;
     padding: 10px;
+    transition: all 100ms;
+}
+
+.chat__notif:hover{
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: default;
 }
 
 .chat_join{
     background-color: rgba(45, 250, 45, 0.5);
 }
 
+.chat_ban{
+    background-color: #f4433677;  
+}
 .chat_leave{
-    background-color: rgba(255, 25, 25, 0.5);
+    background-color: #fb8a0080
 }
 
 .users__container{

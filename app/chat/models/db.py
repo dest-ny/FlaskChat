@@ -122,7 +122,7 @@ def set_online_status(name, status):
 def db_timeout_user(id, time):
     try:
         with get_db_cursor() as cur:
-            cur.execute("UPDATE users SET banned_until = %s WHERE id = %s", (time, id))
+            cur.execute("UPDATE users SET banned_until = %s, online = 0 WHERE id = %s", (time, id))
             cur.connection.commit()
     except Exception as e:
         logger.error(f"Error updating banned_until: {e}", exc_info=True)

@@ -57,12 +57,14 @@ socket.on('usuarios_online', function(data){
     });
 });
 
-socket.on("force_disconnect", function(){
-    socket.disconnect()
-})
+socket.on("force_disconnect", function(name){
+    if (!name || name === document.body.dataset.name) {
+        socket.disconnect();
+    }
+});
 
 socket.on("user_timeout", function(usuario){
-    if(usuario.nombre === document.body.dataset.name){
+    if(usuario.name === document.body.dataset.name){
         socket.disconnect()
     }
 })
@@ -70,7 +72,7 @@ if(formChat){
     formChat.addEventListener("submit", async (event) =>{
         event.preventDefault()
         if(mensajeInput && mensajeInput.value.trim() === "") {
-            mensajeInput.style.border = "1px solid rgb(255, 47, 0)"
+            mensajeInput.style.border = "2px solid rgb(255, 47, 0)"
             return
         }
 
@@ -88,7 +90,7 @@ function scrollChat(){
     const scrollBottom = () => {
         const scrollOptions = {
             top: scroll,
-            behaviour: "smoorth",
+            behaviour: "smooth",
         };
         sala.scrollTo(scrollOptions);
     }
