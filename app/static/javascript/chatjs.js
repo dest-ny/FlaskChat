@@ -19,6 +19,7 @@ function createMessage(message){
         `
 }
 function loadMessages() {
+    console.log(loading + " " + allMessagesLoaded)
     if (loading || allMessagesLoaded) return;
     loading = true
 
@@ -43,7 +44,9 @@ function loadMessages() {
                 });
                 offset += limit;
             }
-            if(messages === undefined || messages.length <= limit){
+            console.log(messages)
+            console.log(messages.length <= limit)
+            if(messages === undefined || messages.length < limit){
                 allMessagesLoaded = true
             }
             loading = false;
