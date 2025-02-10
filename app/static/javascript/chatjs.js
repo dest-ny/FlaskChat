@@ -3,12 +3,55 @@ var socket = io()
 const formChat = document.getElementById("chat__form")
 const chat_listamensajes = document.getElementById("chat_listamensajes")
 const mensajeInput = document.getElementById("mensajeInput")
+const limit = 50
+let offset = 0
+let loading = false
 
-socket.on('estado', function(data){
-    //chat.textContent += data['nombre'] + " " + data['msg'] + "\n"
-    //let arr = data['usuarios']
-    chat_listamensajes.innerHTML += data
-    scrollChat()
+function loadMessages() {
+    if (loading) return;
+    loading = true;
+
+    fetch(`/load_messages?offset=${offset}`)
+        .then(response => response.json())
+        .then(messages => {
+            if (messages && messages.length > 0) {
+                messages.forEach(message => {
+                    const messageElement = document.createElement('div');
+                    messageElement.className = 'chat__msg';
+                    if (message.name === document.body.dataset.name) {
+                        messageElement.classList.add('chat__mymsg');
+                    }
+                    messageElement.innerHTML = `
+                        <span>${message.name}</span> 
+                        <span>${message.content}</span>
+                        <span>${message.fecha_formateada}</span>
+                    `;
+                    chat_listamensajes.prepend(messageElement);
+                });
+                offset += limit;
+            }
+            loading = false;
+            scrollChat()
+        })
+        .catch(error => {
+            console.error('Error cargando mensajes:', error);
+            loading = false;
+        });
+}
+
+socket.on('connect', function(){
+    loadMessages()
+})
+
+socket.on('estado', function(statusMSG){
+    if(statusMSG){
+        const messageElement = document.createElement("div")
+        messageElement.className = "chat__notif"
+        messageElement.classList.add(statusMSG.category)
+        messageElement.innerHTML = `<span><strong><span>${statusMSG.name}</span></strong> <span>${statusMSG.content}</span></span>`
+        chat_listamensajes.appendChild(messageElement)
+        scrollChat()
+    }
 });
 
 socket.on('disconnect', function(){

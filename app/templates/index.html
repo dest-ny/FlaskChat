@@ -17,13 +17,7 @@
             <div class="chat__wrapper">
                 <div class="chat__sala" id="chat_sala">              
                     <div class="chat__listamensajes" id="chat_listamensajes">
-                        {%if lista_mensajes|length > 0%}
-                            {%for mensaje in lista_mensajes%}
-                                {%with mensaje=mensaje%}
-                                    {% include "includes/chatmessage.html"%}
-                                {%endwith%}
-                            {%endfor%}
-                        {%endif%}
+
                     </div>
                 </div>
                 <div class="chat__inputs">

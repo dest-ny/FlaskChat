@@ -63,19 +63,19 @@ def store_message(user, message):
             if res:
                 cur.execute("INSERT INTO messages (sender, content) VALUES (%s, %s)", (res['id'], message))
                 cur.connection.commit()
-                cur.execute("SELECT sender, name, content, DATE_FORMAT(timestamp, '%k:%i | %d-%m-%Y') AS fecha_formateada FROM users JOIN messages on(users.id = sender) WHERE messages.id = LAST_INSERT_ID()")
+                cur.execute("SELECT sender, name, content, DATE_FORMAT(timestamp, '%k:%i | %d/%m/%Y') AS fecha_formateada FROM users JOIN messages on(users.id = sender) WHERE messages.id = LAST_INSERT_ID()")
                 message = cur.fetchone()
                 if message:
                     return message
     except Exception as e:
         logger.error(f"Error saving message: {e}", exc_info=True)
-        # No need to call rollback here; it's handled in the context manager
     return {}
 
-def get_messages():
+def get_messages(limit = 50, offset = 0):
     try:
         with get_db_cursor() as cur:
-            cur.execute("SELECT sender, content, name, DATE_FORMAT(timestamp, '%k:%i | %d-%m-%Y') AS fecha_formateada FROM users JOIN messages on(users.id=sender) ORDER BY messages.id ASC")
+            sql = "SELECT sender, content, name, DATE_FORMAT(timestamp, '%%k:%%i | %%d/%%m/%%Y') AS fecha_formateada FROM users JOIN messages on(users.id=sender) ORDER BY messages.timestamp DESC LIMIT %s OFFSET %s"
+            cur.execute(sql, (limit, offset)) # me da problemas con el formateo de strings de python si lo hago de golpe 
             res = cur.fetchall()
             if res:
                 for r in res:

@@ -15,10 +15,18 @@ def chat():
     if 'nombre' in session:
         if userBanned(session['nombre']):
             return render_template('index.html')
-        return render_template('index.html', lista_mensajes=get_messages())
+        return render_template('index.html')
     else:
         return redirect(url_for('login'))
+
+@app.route("/load_messages", methods=["GET"])
+def load_messages():
+    if 'nombre' not in session or userBanned(session['nombre']):
+        return {"error" : "Acceso no autorizado"}, 401
     
+    offset = int(request.args.get('offset', 0))
+    return get_messages(50, offset)
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     error = None

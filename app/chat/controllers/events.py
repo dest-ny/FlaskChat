@@ -16,7 +16,7 @@ def conectado():
                 'content': "se ha unido a la sala!",
                 }
             set_online_status(session['nombre'], True)
-            socketio.emit('estado', render_template('includes/chatmessage.html', mensaje=mensaje))
+            socketio.emit('estado', mensaje)
             socketio.emit("usuarios_online", get_usuarios_online())
     else:
         return
@@ -32,13 +32,15 @@ def desconectado():
                 'name' : f"{session['nombre']}",
                 'content': "ha salido de la sala!",
                 }
-            socketio.emit('estado', render_template('includes/chatmessage.html', mensaje=mensaje))
+            socketio.emit('estado', mensaje)
             socketio.emit("usuarios_online", get_usuarios_online())
     else:
         return
     
 @socketio.on("mensaje")
 def recibir_mensaje(msg):
+    if 'nombre' not in session: 
+        return
     message = store_message(session['nombre'], msg)
     if message:
         message['content'] = message['content'].decode('utf-8')
@@ -57,7 +59,7 @@ def timeout_user(data):
                 'name' : usuario['name'],
                 'content': f"ha sido expulsado de la sala hasta: {time_until.strftime("%d/%m/%Y - %H:%M")}",
                 }
-        socketio.emit('estado', render_template('includes/chatmessage.html', mensaje=mensaje))
+        socketio.emit('estado', mensaje)
         socketio.emit("usuarios_online", get_usuarios_online())
     else:
         print(f"Usuario {session['role']} ha intentado una acción con permisos insuficientes")
