@@ -62,12 +62,6 @@ socket.on("force_disconnect", function(name){
         socket.disconnect();
     }
 });
-
-socket.on("user_timeout", function(usuario){
-    if(usuario.name === document.body.dataset.name){
-        socket.disconnect()
-    }
-})
 if(formChat){
     formChat.addEventListener("submit", async (event) =>{
         event.preventDefault()

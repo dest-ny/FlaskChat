@@ -55,7 +55,7 @@ def timeout_user(data):
         mensaje = {
                 'category' : "chat_ban",
                 'name' : usuario['name'],
-                'content': f"ha sido expulasado de la sala hasta: {time_until.strftime("%d/%m/%Y - %H:%M")}",
+                'content': f"ha sido expulsado de la sala hasta: {time_until.strftime("%d/%m/%Y - %H:%M")}",
                 }
         socketio.emit('estado', render_template('includes/chatmessage.html', mensaje=mensaje))
         socketio.emit("usuarios_online", get_usuarios_online())

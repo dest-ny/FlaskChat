@@ -1,10 +1,20 @@
 from app import app
 from flask import render_template, session, url_for, request, redirect, flash
 from app.chat.models.db import *
+from datetime import datetime
+
+def userBanned(name):
+    usuario = get_usuario(name=name)
+    if usuario:
+        if usuario['banned_until'] and datetime.now() < usuario['banned_until']:
+            return True
+    return False
 
 @app.route("/")
 def chat():
     if 'nombre' in session:
+        if userBanned(session['nombre']):
+            return render_template('index.html')
         return render_template('index.html', lista_mensajes=get_messages())
     else:
         return redirect(url_for('login'))
@@ -29,7 +39,7 @@ def login():
                 else:
                     error = "Nombre o contraseña incorrectos"
         except Exception as e:
-            error = "Error durante el inicio de sesión. Inténtalo de nuevo más tarde."
+            error = "Error durante el inicio de sesión. Inténtalo de nuevo más tarde"
     return render_template('login.html', error=error)
 
 @app.route("/logout")
