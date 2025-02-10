@@ -2,18 +2,35 @@ var socket = io()
 
 const formChat = document.getElementById("chat__form")
 const chat_listamensajes = document.getElementById("chat_listamensajes")
+const chat_sala = document.getElementById("chat_sala")
 const mensajeInput = document.getElementById("mensajeInput")
+
 const limit = 50
 let offset = 0
 let loading = false
+let hasLoaded = false
+let allMessagesLoaded = false
 
+function createMessage(message){
+    return `
+            <span><strong>${message.name}</strong></span> 
+            <span>${message.content}</span>
+            <span>${message.fecha_formateada}</span>
+        `
+}
 function loadMessages() {
-    if (loading) return;
-    loading = true;
+    if (loading || allMessagesLoaded) return;
+    loading = true
+
+    let loadingMessage = document.createElement("div")
+    loadingMessage.className = "chat__loading"
+    loadingMessage.innerHTML = "<span>Cargando mensajes...</span>"
+    chat_listamensajes.prepend(loadingMessage);
 
     fetch(`/load_messages?offset=${offset}`)
         .then(response => response.json())
         .then(messages => {
+            chat_listamensajes.removeChild(loadingMessage);
             if (messages && messages.length > 0) {
                 messages.forEach(message => {
                     const messageElement = document.createElement('div');
@@ -21,23 +38,37 @@ function loadMessages() {
                     if (message.name === document.body.dataset.name) {
                         messageElement.classList.add('chat__mymsg');
                     }
-                    messageElement.innerHTML = `
-                        <span>${message.name}</span> 
-                        <span>${message.content}</span>
-                        <span>${message.fecha_formateada}</span>
-                    `;
+                    messageElement.innerHTML = createMessage(message);
                     chat_listamensajes.prepend(messageElement);
                 });
                 offset += limit;
             }
+            if(messages === undefined || messages.length <= limit){
+                allMessagesLoaded = true
+            }
             loading = false;
-            scrollChat()
         })
         .catch(error => {
             console.error('Error cargando mensajes:', error);
             loading = false;
         });
 }
+
+chat_sala.addEventListener('scroll', function() {
+    if (chat_sala.scrollTop === 0) {
+        loadMessages();
+    }else if(chat_sala.scrollTop + chat_sala.clientHeight >= chat_sala.scrollHeight){
+        let messageElements = chat_listamensajes.querySelectorAll(".chat__msg")
+        if (messageElements.length > limit) {
+            while (messageElements.length > limit) {
+                messageElements = chat_listamensajes.querySelectorAll(".chat__msg")
+                chat_listamensajes.removeChild(messageElements[0]);
+            }
+        }
+        offset = limit
+        allMessagesLoaded = false
+    }
+})
 
 socket.on('connect', function(){
     loadMessages()
@@ -59,9 +90,14 @@ socket.on('disconnect', function(){
     location.reload()
 })
 
-socket.on('mensaje', function(data){
-    chat_listamensajes.innerHTML += data
-    scrollChat()
+socket.on('mensaje', function(message){
+    if(message){
+        const messageElement = document.createElement("div")
+        messageElement.className = "chat__msg"
+        messageElement.innerHTML = createMessage(message)
+        chat_listamensajes.appendChild(messageElement)
+        scrollChat()
+    }
 });
 
 socket.on('usuarios_online', function(data){
@@ -122,9 +158,9 @@ if(formChat){
 
 function scrollChat(){
     const sala = document.getElementById("chat_sala")
-    const scroll = sala.scrollHeight;
 
     const scrollBottom = () => {
+        const scroll = sala.scrollHeight;
         const scrollOptions = {
             top: scroll,
             behaviour: "smooth",

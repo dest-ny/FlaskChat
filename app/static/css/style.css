@@ -210,6 +210,12 @@ body{
     border-radius: 25px;
     overflow: hidden;
 }
+.chat__loading {
+    text-align: center;
+    font-style: italic;
+    color: gray;
+    padding: 10px;
+}
 .chat__wrapper{
     flex: 3;
     display: flex;

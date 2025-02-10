@@ -44,7 +44,7 @@ def recibir_mensaje(msg):
     message = store_message(session['nombre'], msg)
     if message:
         message['content'] = message['content'].decode('utf-8')
-    socketio.emit("mensaje", render_template('includes/chatmessage.html', mensaje=message))
+    socketio.emit("mensaje", message)
     
 @socketio.on("timeout_user")
 def timeout_user(data):

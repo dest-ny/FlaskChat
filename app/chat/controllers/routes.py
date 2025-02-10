@@ -25,7 +25,7 @@ def load_messages():
         return {"error" : "Acceso no autorizado"}, 401
     
     offset = int(request.args.get('offset', 0))
-    return get_messages(50, offset)
+    return get_messages(offset = offset)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

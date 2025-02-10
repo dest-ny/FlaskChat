@@ -74,7 +74,7 @@ def store_message(user, message):
 def get_messages(limit = 50, offset = 0):
     try:
         with get_db_cursor() as cur:
-            sql = "SELECT sender, content, name, DATE_FORMAT(timestamp, '%%k:%%i | %%d/%%m/%%Y') AS fecha_formateada FROM users JOIN messages on(users.id=sender) ORDER BY messages.timestamp DESC LIMIT %s OFFSET %s"
+            sql = "SELECT messages.id, sender, content, name, DATE_FORMAT(timestamp, '%%k:%%i | %%d/%%m/%%Y') AS fecha_formateada FROM users JOIN messages on(users.id=sender) ORDER BY messages.id DESC LIMIT %s OFFSET %s"
             cur.execute(sql, (limit, offset)) # me da problemas con el formateo de strings de python si lo hago de golpe 
             res = cur.fetchall()
             if res:
