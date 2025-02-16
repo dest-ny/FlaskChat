@@ -11,7 +11,10 @@
     {%if error %}
     <div class="error">
       <div class="error-msg">
-        {{error}}
+        {{error}}<br>
+        {% if timer %}
+        <span id="timerText">{{timer}}</span>
+        {%endif%}
       </div>
     </div>
     {%endif%}

@@ -50,15 +50,28 @@ def recibir_mensaje(msg):
 def timeout_user(data):
     usuario = get_usuario(data['user'])
     if session['role'] >= 5 and session['role'] > usuario['role']:
-        minutos = timedelta(minutes=data['duration'])
-        time_until = datetime.now() + minutos
+        time_until = 0
+        mensaje = {}
+        print(data['duration'])
+        if data['duration'] != -1:
+            minutos = timedelta(minutes=data['duration'])
+            time_until = datetime.now() + minutos
+            mensaje = {
+                    'category' : "chat_ban",
+                    'name' : usuario['name'],
+                    'content': f"ha sido expulsado de la sala hasta: {time_until.strftime("%d/%m/%Y - %H:%M")}",
+                    }
+        else:
+            time_until = datetime.max
+            print(time_until)
+            mensaje = {
+                    'category' : "chat_ban",
+                    'name' : usuario['name'],
+                    'content': f"ha sido vetado de la sala para siempre!",
+                    }
         db_timeout_user(data['user'], time_until)
+        set_online_status(usuario['name'], 0)
         socketio.emit("force_disconnect", usuario['name'])
-        mensaje = {
-                'category' : "chat_ban",
-                'name' : usuario['name'],
-                'content': f"ha sido expulsado de la sala hasta: {time_until.strftime("%d/%m/%Y - %H:%M")}",
-                }
         socketio.emit('estado', mensaje)
         socketio.emit("usuarios_online", get_usuarios_online())
     else:

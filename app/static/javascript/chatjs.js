@@ -127,12 +127,13 @@ socket.on('usuarios_online', function(data){
             <div class="user__buttons">
                 <button class="user_button" onclick="timeout_user(${usuario.id})">TIMEOUT</button>
                 ${role >= 10 && usuario.name != nombre ? `
-                <button class="user_button">BAN</button>
+                <button class="user_button" onclick="ban_user(${usuario.id})">BAN</button>
                 ` : ""}
             </div>
             ` : ""}
         </div> `;
         users_wrapper.appendChild(li);
+        console.log(role + " | " + usuario.name + " | " + (role >= 10 && usuario.name != nombre))
     });
 });
 
@@ -177,6 +178,14 @@ function timeout_user(userId){
     duration = parseInt(duration)
 
     if(isNaN(duration) || duration <= 0) return;
+
+    socket.emit("timeout_user", {"user" : userId, "duration": duration})
+}
+
+function ban_user(userId){
+    let okay = confirm("Desea vetar al usuario para siempre?")
+    if(!okay) return;
+    let duration = -1
 
     socket.emit("timeout_user", {"user" : userId, "duration": duration})
 }

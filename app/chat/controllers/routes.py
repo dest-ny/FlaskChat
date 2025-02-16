@@ -14,7 +14,9 @@ def userBanned(name):
 def chat():
     if 'nombre' in session:
         if userBanned(session['nombre']):
-            return render_template('index.html')
+            session.clear()
+            flash("HAS SIDO EXPULSADO DEL CHAT", 'error')
+            return redirect(url_for('login'))
         return render_template('index.html')
     else:
         return redirect(url_for('login'))
@@ -30,6 +32,7 @@ def load_messages():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     error = None
+    timer = None
     if 'nombre' in session:
         return redirect(url_for('chat'))
     if request.method == 'POST':
@@ -39,11 +42,16 @@ def login():
             if any(usuario['name'] == nombre for usuario in get_usuarios_online()):
                     error = "El usuario ya está conectado"
             else:    
-                result = validate_credentials(nombre, password)
-                if(result):
-                    session['nombre'] = nombre
-                    session['role'] = result['role']
-                    return redirect(url_for('chat'))
+                usuario = validate_credentials(nombre, password)
+                if(usuario):
+                    if usuario['banned_until'] and datetime.now() < usuario['banned_until']:
+                        error = "has sido expulsado del chat hasta:"
+                        timer = usuario['banned_until'].strftime("%H:%M:%S, %m/%d/%Y")
+                        return render_template('login.html', error=error, timer=timer)
+                    else:
+                        session['nombre'] = nombre
+                        session['role'] = usuario['role']
+                        return redirect(url_for('chat'))
                 else:
                     error = "Nombre o contraseña incorrectos"
         except Exception as e:

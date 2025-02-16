@@ -45,7 +45,7 @@ def validate_credentials(user, password):
             result = cur.fetchone()
             if result and flask_bcrypt.check_password_hash(result['password'], password):
                 return result
-            logger.warning(f"Validation failed for user {user}\n {result}\n----\n passwordCheck : {flask_bcrypt.check_password_hash(result['password'], password)} | {flask_bcrypt.generate_password_hash(password)}")
+            logger.warning(f"Validation failed for user {user}")
             return {}
     except Exception as e:
         logger.error(f"Error validating password for {user}: {e}", exc_info=True)
@@ -53,7 +53,6 @@ def validate_credentials(user, password):
 
 def register_user(user, password):
     hashedpw = flask_bcrypt.generate_password_hash(password).decode('utf-8')
-    print(len(hashedpw))
     db_insert("INSERT INTO users(name, password) VALUES (%s, %s)", (user, hashedpw))
 
 def store_message(user, message):
@@ -96,6 +95,14 @@ def get_usuarios_online():
     except Exception as e:
         logger.error(f"Error fetching online users: {e}", exc_info=True)
         return {}
+
+def db_start():
+    try:
+        with get_db_cursor() as cur:
+            cur.execute("UPDATE users SET online = 0")
+            cur.connection.commit()
+    except Exception as e:
+        logger.error(f"Error updating user status: {e}", exc_info=True)
 
 def get_usuario(id=None, name=None):
     try:
