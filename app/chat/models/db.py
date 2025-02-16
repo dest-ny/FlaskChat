@@ -45,7 +45,7 @@ def validate_credentials(user, password):
             result = cur.fetchone()
             if result and flask_bcrypt.check_password_hash(result['password'], password):
                 return result
-            logger.warning(f"Validation failed for user {user}")
+            logger.warning(f"Validation failed for user {user}\n {result}\n----\n passwordCheck : {flask_bcrypt.check_password_hash(result['password'], password)} | {flask_bcrypt.generate_password_hash(password)}")
             return {}
     except Exception as e:
         logger.error(f"Error validating password for {user}: {e}", exc_info=True)
@@ -53,6 +53,7 @@ def validate_credentials(user, password):
 
 def register_user(user, password):
     hashedpw = flask_bcrypt.generate_password_hash(password).decode('utf-8')
+    print(len(hashedpw))
     db_insert("INSERT INTO users(name, password) VALUES (%s, %s)", (user, hashedpw))
 
 def store_message(user, message):

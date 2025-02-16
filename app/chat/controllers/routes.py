@@ -81,8 +81,7 @@ def register():
             elif password != repetirPass:
                 error = "Las contraseñas no coinciden"
             else:
-                hashed_password = flask_bcrypt.generate_password_hash(password)
-                register_user(nombre, hashed_password)
+                register_user(nombre, password)
                 flash("Usuario registrado con éxito", 'success')
                 return redirect(url_for('login'))
         except Exception as e:
