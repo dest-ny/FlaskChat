@@ -133,7 +133,6 @@ socket.on('usuarios_online', function(data){
             ` : ""}
         </div> `;
         users_wrapper.appendChild(li);
-        console.log(role + " | " + usuario.name + " | " + (role >= 10 && usuario.name != nombre))
     });
 });
 

@@ -1,6 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-:root{
+:root {
     --_background: hsla(204, 100%, 50%, 0.5);
+    --primary-color: #007bff; 
+    --secondary-color: #6c757d;
+    --success-color: #28a745; 
+    --error-color: #dc3545; 
+    --background-light: #f8f9fa; 
+    --background-dark: #343a40; 
+    --text-light: #ffffff; 
+    --text-dark: #212529; 
 }
 * {
     background-color: transparent;
