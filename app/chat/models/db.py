@@ -134,3 +134,25 @@ def db_timeout_user(id, time):
             cur.connection.commit()
     except Exception as e:
         logger.error(f"Error updating banned_until: {e}", exc_info=True)
+
+def db_get_info():
+    try:
+        with get_db_cursor() as cur:
+            cur.execute("SELECT COUNT(*) as count FROM users")
+            usercount = cur.fetchone()
+            if not usercount:
+                usercount = 0
+            else:
+                usercount = usercount['count']
+
+            cur.execute("SELECT COUNT(*) as count FROM messages")
+            messagecount = cur.fetchone() 
+            if not messagecount:
+                messagecount = 0
+            else:
+                messagecount = messagecount['count']
+            return {"users" : usercount,
+                    "messages" : messagecount}
+    except Exception as e:
+        logger.error(f"Error fetching messages: {e}", exc_info=True)
+        return {}

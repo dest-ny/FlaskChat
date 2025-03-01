@@ -12,7 +12,6 @@
 }
 * {
     background-color: transparent;
-    color: #2e2e2e;
     margin: 0;
     padding: 0;
     font-family: 'Roboto', serif;
@@ -408,4 +407,128 @@ body{
 .users__container .user__buttons button:active{
     background-color: rgba(255, 0, 0, 0.375);
     transform: scale(105%);
+}
+
+.dev-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #2c3e50;
+    color: white;
+    z-index: 1000;
+    font-size: 14px;
+    transition: transform 0.3s ease;
+}
+
+.dev-bar.collapsed {
+    transform: translateY(calc(100% - 50px));
+}
+
+.dev-bar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 15px;
+    background-color: #1a2530;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.dev-bar-header button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.dev-bar button:hover {
+    background-color: #2980b9;
+}
+
+.dev-bar-content {
+    display: flex;
+    padding: 10px;
+    gap: 20px;
+    overflow-x: auto;
+}
+
+.dev-section {
+    min-width: 250px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
+
+.dev-section h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 5px;
+}
+
+.dev-bar button {
+    background-color: var(--_background);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin: 5px 5px 5px 0;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.dev-bar input, .dev-bar select {
+    display: block;
+    padding: 5px;
+    margin: 5px 5px 5px 0;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    background-color: #f5f5f5;
+    width: calc(100% - 10px);
+}
+
+.info-section{
+    display: flex;
+    flex-direction: column;
+}
+
+.info-section h4 {
+    border-bottom: 1px dotted #ccc;
+}
+
+.item-first {
+    float: left;
+}
+.item-last{
+    float:right;
+}
+.info-item::after{
+    content: '';
+    border-bottom: 1px dotted #ccc;
+    display: block;
+    overflow: hidden;
+    height: 1em;
+}
+
+#socket-status {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 5px 0;
+    border-radius: 3px;
+    background-color: var(--success-color);
+}
+
+#socket-status.disconnected{
+    background-color: var(--error-color);
+}
+
+.dev-bar {
+    display: none;
+}
+
+body[data-role="15"] .dev-bar {
+    display: block;
 }

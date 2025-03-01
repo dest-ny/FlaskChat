@@ -2,6 +2,7 @@ from app import app
 from flask import render_template, session, url_for, request, redirect, flash
 from app.chat.models.db import *
 from datetime import datetime
+import psutil
 
 def userBanned(name):
     usuario = get_usuario(name=name)
@@ -28,6 +29,16 @@ def load_messages():
     
     offset = int(request.args.get('offset', 0))
     return get_messages(offset = offset)
+
+@app.route("/get_info", methods=["GET"])
+def get_info():
+    if 'nombre' not in session or session['role'] != 15:
+        return {"error" : "Acceso no autorizado"}, 401
+    
+    data = db_get_info()
+    data['cpu'] = psutil.cpu_percent(1)
+    data['memory'] = round(psutil.Process().memory_percent() * 100, 2)
+    return data, 200
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

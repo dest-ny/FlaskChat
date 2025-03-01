@@ -34,7 +34,72 @@
                 </ul>
             </div>
         </div>
+        <div class="dev-bar collapsed" id="dev-bar">
+            <div class="dev-bar-header">
+                <span>Opciones de desarrollador</span>
+                <button id="toggle-devbar">▲</button>
+            </div>
+            <div class="dev-bar-content">
+                <div class="dev-section">
+                    <h3>Controles del chat</h3>
+                    <button id="clear-messages">Borrar Mensajes</button>
+                </div>
+                <div class="dev-section">
+                    <h3>Simulación</h3>
+                    <select id="sim-user-action">
+                        <option value="join">Join Chat</option>
+                        <option value="leave">Leave Chat</option>
+                        <option value="message">Send Message</option>
+                    </select>
+                    <input type="text" id="sim-username" placeholder="Nombre">
+                    <input type="text" id="sim-message" placeholder="Mensaje">
+                    <button id="run-simulation">Ejecutar</button>
+                </div>
+                <div class="dev-section">
+                    <h3>Estado del socket</h3>
+                    <div id="socket-status">Conectado</div>
+                    <button id="connect-socket">Desconectar</button>
+                </div>
+                <div class="dev-section">
+                    <h3>Información</h3>
+                    <div class="info-section">
+                        <div class="info-item">
+                            <span class="item-first">Usuarios creados:</span>
+                            <span class="item-last" id="usercount">10</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="item-first">Mensajes:</span>
+                            <span class="item-last" id="messagecount">11230</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="item-first">Tiempo de respuesta:</span>
+                            <span class="item-last" id="ping">0</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="item-first">Memoria utilizada:</span>
+                            <span class="item-last" id="memoryusage">11230</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="item-first">Carga de la CPU:</span>
+                            <span class="item-last" id="serverload">11230</span>
+                        </div>
+                    </div>
+                    <button id="update-info">Actualizar</button>
+                </div>
+                <div class="dev-section">
+                    <h3>Administración de usuarios</h3>
+                    <div class="user-search">
+                        <input type="text" id="search-username" placeholder="Buscar usuario">
+                        <button id="search-user">Buscar</button>
+                    </div>
+                    <div id="user-info-results"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 <script src="{{url_for('static', filename='javascript/chatjs.js')}}"></script>
+{% if session['role'] >= 10 %}
+<script src="{{url_for('static', filename='javascript/devbar.js')}}"></script>
+{% endif %}
 </html>
