@@ -1,16 +1,24 @@
 from app import socketio, app
 from app.chat.models.db import db_start
+import logging
 
+logger = logging.getLogger(__name__)
 startup_done = False
 
 @app.before_request
 def on_startup():
     global startup_done
-    if not startup_done:
-        db_start()
-        startup_done = True
-        print("Todos los usuarios han sido marcados como desconectados.")
+    try:
+        if not startup_done:
+            db_start()
+            startup_done = True
+            logger.info("Todos los usuarios han sido marcados como desconectados.")
+    except Exception as e:
+        logger.error(f"Error during startup: {e}", exc_info=True)
         
 if __name__ == '__main__':
-    socketio.run(app, host="0.0.0.0")
+    try:
+        socketio.run(app, host="0.0.0.0")
+    except Exception as e:
+        logger.error(f"Error starting application: {e}", exc_info=True)
 

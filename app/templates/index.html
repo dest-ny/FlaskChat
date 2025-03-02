@@ -45,17 +45,6 @@
                     <button id="clear-messages">Borrar Mensajes</button>
                 </div>
                 <div class="dev-section">
-                    <h3>Simulación</h3>
-                    <select id="sim-user-action">
-                        <option value="join">Join Chat</option>
-                        <option value="leave">Leave Chat</option>
-                        <option value="message">Send Message</option>
-                    </select>
-                    <input type="text" id="sim-username" placeholder="Nombre">
-                    <input type="text" id="sim-message" placeholder="Mensaje">
-                    <button id="run-simulation">Ejecutar</button>
-                </div>
-                <div class="dev-section">
                     <h3>Estado del socket</h3>
                     <div id="socket-status">Conectado</div>
                     <button id="connect-socket">Desconectar</button>
@@ -88,11 +77,18 @@
                 </div>
                 <div class="dev-section">
                     <h3>Administración de usuarios</h3>
-                    <div class="user-search">
-                        <input type="text" id="search-username" placeholder="Buscar usuario">
-                        <button id="search-user">Buscar</button>
+                    <div class="user-search-container">
+                        <div class="user-search">
+                            <input type="text" id="search-username" placeholder="Buscar usuario">
+                            <button id="search-user">Buscar</button>
+                            <div class="user-info-results">
+                                <ul id="user-results-list">
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="user-info" id="user-info_section">
+                        </div>
                     </div>
-                    <div id="user-info-results"></div>
                 </div>
             </div>
         </div>

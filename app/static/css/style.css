@@ -327,6 +327,9 @@ body{
     justify-content: center;
     padding: 10px;
     transition: all 100ms;
+    border-radius: 8px;
+    margin: 5px 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .chat__notif:hover{
@@ -340,10 +343,18 @@ body{
 }
 
 .chat_ban{
-    background-color: #f4433677;  
+    background-color: #f4433677;
 }
+
 .chat_leave{
-    background-color: #fb8a0080
+    background-color: #fb8a0080;
+}
+
+.chat_system{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    background-color: rgba(0, 153, 255, 0.2);
 }
 
 .users__container{
@@ -460,6 +471,11 @@ body{
     padding: 10px;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 5px;
+    min-height: 300px;
+}
+
+.dev-section:last-child {
+    min-width: 500px;
 }
 
 .dev-section h3 {
@@ -487,7 +503,6 @@ body{
     border-radius: 3px;
     border: 1px solid #ccc;
     background-color: #f5f5f5;
-    width: calc(100% - 10px);
 }
 
 .info-section{
@@ -523,6 +538,101 @@ body{
 
 #socket-status.disconnected{
     background-color: var(--error-color);
+}
+
+.user-search-container {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    margin-top: 10px;
+    width: 100%;
+    min-height: 200px;
+}
+
+.user-search {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.user-info-results {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    margin-top: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    min-height: 170px;
+    max-height: 170px;
+}
+
+
+.user-info-results div:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.user-info-results div:last-child {
+    border-bottom: none;
+}
+
+.user-info-results ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.user-info-results li {
+    padding: 5px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.user-info-results li:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.user-info-results li:last-child {
+    border-bottom: none;
+}
+
+.user-info {
+    flex: 1;
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    overflow-y: auto;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 5px;
+}
+
+.user-info h4 {
+    margin-top: 0;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.user-info .user-details {
+    margin-top: 10px;
+}
+
+.user-info .user-detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px dotted rgba(255, 255, 255, 0.1);
+}
+
+.user-info .user-detail-item:last-child {
+    border-bottom: none;
+}
+
+.user-info .user-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .dev-bar {

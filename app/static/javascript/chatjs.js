@@ -141,6 +141,28 @@ socket.on("force_disconnect", function(name){
         socket.disconnect();
     }
 });
+
+socket.on("clear_messages", function(){
+
+    chat_listamensajes.innerHTML = "";
+    
+    offset = 0;
+    loading = false;
+    allMessagesLoaded = false;
+
+    const notificationElement = document.createElement("div");
+    notificationElement.className = "chat__notif";
+    notificationElement.classList.add("chat_system");
+    notificationElement.innerHTML = `<span><strong>Sistema</strong></span> Un administrador ha borrado todos los mensajes del chat`;
+    chat_listamensajes.appendChild(notificationElement);
+    scrollChat();
+    setTimeout(() => {
+        if (notificationElement.parentNode) {
+            notificationElement.parentNode.removeChild(notificationElement);
+        }
+    }, 5000);
+});
+
 if(formChat){
     formChat.addEventListener("submit", async (event) =>{
         event.preventDefault()
@@ -188,3 +210,5 @@ function ban_user(userId){
 
     socket.emit("timeout_user", {"user" : userId, "duration": duration})
 }
+
+
