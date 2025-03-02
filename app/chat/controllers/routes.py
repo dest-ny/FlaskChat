@@ -1,3 +1,4 @@
+# Controlador principal de rutas para la aplicación de chat
 from app import app
 from flask import render_template, session, url_for, request, redirect, flash, jsonify
 from app.chat.models.db import *
@@ -8,6 +9,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 def userBanned(name):
+    """
+    Verifica si un usuario está actualmente baneado.
+    
+    Args:
+        name (str): Nombre del usuario a verificar
+        
+    Returns:
+        bool: True si el usuario está baneado, False en caso contrario
+    """
     try:
         usuario = get_usuario(name=name)
         if usuario:
@@ -20,6 +30,10 @@ def userBanned(name):
 
 @app.route("/")
 def chat():
+    """
+    Ruta principal que muestra la interfaz de chat.
+    Redirige al login si el usuario no ha iniciado sesión o está baneado.
+    """
     try:
         if 'nombre' in session:
             if userBanned(session['nombre']):
@@ -36,6 +50,13 @@ def chat():
 
 @app.route("/load_messages", methods=["GET"])
 def load_messages():
+    """
+    Endpoint para cargar mensajes del chat con paginación.
+    Requiere que el usuario esté autenticado y no baneado.
+    
+    Query params:
+        offset (int): Número de mensajes a saltar para la paginación
+    """
     try:
         if 'nombre' not in session or userBanned(session['nombre']):
             return {"error" : "Acceso no autorizado"}, 401
@@ -53,13 +74,17 @@ def load_messages():
 
 @app.route("/get_info", methods=["GET"])
 def get_info():
+    """
+    Endpoint para obtener información del sistema y estadísticas.
+    Solo accesible para administradores (role >= 10).
+    """
     try:
         if 'nombre' not in session or session['role'] < 10:
             return {"error" : "Acceso no autorizado"}, 401
         
         data = db_get_info()
-        data['cpu'] = psutil.cpu_percent()
-        data['memory'] = round(psutil.Process().memory_percent() * 100, 2)
+        data['cpu'] = psutil.cpu_percent()  # Uso de CPU
+        data['memory'] = round(psutil.Process().memory_percent() * 100, 2)  # Uso de memoria
         return data, 200
     except Exception as e:
         logger.error(f"Error getting info: {e}", exc_info=True)
@@ -67,6 +92,11 @@ def get_info():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    """
+    Maneja el inicio de sesión de usuarios.
+    GET: Muestra el formulario de login
+    POST: Procesa el formulario y autentica al usuario
+    """
     error = None
     timer = None
     try:
@@ -107,6 +137,9 @@ def login():
 
 @app.route("/logout")
 def logout():
+    """
+    Cierra la sesión del usuario actual y redirige a la página de login.
+    """
     try:
         if 'nombre' in session:
             session.clear()
@@ -117,6 +150,11 @@ def logout():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    """
+    Maneja el registro de nuevos usuarios.
+    GET: Muestra el formulario de registro
+    POST: Procesa el formulario y crea un nuevo usuario si los datos son válidos
+    """
     error = None
     try:
         if 'nombre' in session:
@@ -127,6 +165,7 @@ def register():
             password = request.form.get('pass', '')
             repetirPass = request.form.get('passrepeat', '')
 
+            # Validación de datos de registro
             if not nombre or not password or not repetirPass:
                 error = "Todos los campos son necesarios"
             elif len(nombre) < 3:
@@ -155,6 +194,13 @@ def register():
 
 @app.route("/search_users", methods=["GET"])
 def search_users():
+    """
+    Endpoint para buscar usuarios por nombre.
+    Solo accesible para administradores (role >= 10).
+    
+    Query params:
+        termino (str): Término de búsqueda para filtrar usuarios
+    """
     try:
         if 'nombre' not in session or session['role'] < 10:
             return {"error" : "Acceso no autorizado"}, 401
@@ -172,6 +218,14 @@ def search_users():
 
 @app.route("/change_role", methods=["POST"])
 def change_role():
+    """
+    Endpoint para cambiar el rol de un usuario.
+    Solo accesible para administradores (role >= 10).
+    
+    JSON body:
+        user (int): ID del usuario
+        role (int): Nuevo rol a asignar (0-10)
+    """
     try:
         if 'nombre' not in session or session['role'] < 10:
             return {"error" : "Acceso no autorizado"}, 401
@@ -204,6 +258,13 @@ def change_role():
 
 @app.route("/unban_user", methods=["POST"])
 def unban_user():
+    """
+    Endpoint para desbanear a un usuario.
+    Solo accesible para administradores (role >= 10).
+    
+    JSON body:
+        user (int): ID del usuario a desbanear
+    """
     try:
         if 'nombre' not in session or session['role'] < 10:
             return {"error" : "Acceso no autorizado"}, 401

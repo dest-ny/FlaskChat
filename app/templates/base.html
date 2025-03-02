@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
   <title>FlaskChat - {% block title %}{% endblock title %}</title>
+  <!-- Plantilla base que define la estructura común para todas las páginas -->
 </head>
 <body>
   <div class="main-container">
+    <!-- Bloque para mostrar mensajes de error -->
     {%if error %}
     <div class="error">
       <div class="error-msg">
@@ -18,6 +20,8 @@
       </div>
     </div>
     {%endif%}
+    
+    <!-- Sistema de mensajes flash para notificaciones -->
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}
@@ -29,27 +33,26 @@
       {% endfor %}
     {% endif %}
     {% endwith %}
+    
+    <!-- Contenedor para el título principal de la página -->
     <div class="title-container">
       <span class="flasktitle">{%block maintitle%}{%endblock maintitle%}</span>
       <span class="flasksubtitle">{%block mainsubtitle%}{%endblock mainsubtitle%}</span>
     </div>
+    
+    <!-- Contenedor principal para el formulario -->
     <div class="window-container">
       <form class="form" action="{%block form_action%}{%endblock form_action%}" method="{%block form_method%}{%endblock form_method%}">
         <div class="form-inputs">
           {%block inputfields%}{%endblock inputfields%}
-          <!--<span class="labelfor">Nombre: </span>
-          <input type="text" class="form-input">
-          <span class="labelfor">Contraseña: </span>
-          <input type="password" class="form-input">-->
         </div>
         <div class="form-buttons">
           {%block buttons%}{%endblock buttons%}
-          <!--<button class="btn">ENTRAR</button>
-          <button class="btn">REGISTRO</button>-->
         </div>
       </form>
     </div>
   </div>
 </body>
+<!-- Bloque para incluir scripts JavaScript específicos de cada página -->
 {%block script%}{%endblock script%}
 </html>

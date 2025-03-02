@@ -1,3 +1,4 @@
+# Archivo principal para iniciar la aplicación Flask
 from app import socketio, app
 from app.chat.models.db import db_start
 import logging
@@ -7,6 +8,11 @@ startup_done = False
 
 @app.before_request
 def on_startup():
+    """
+    Función que se ejecuta antes de cada solicitud.
+    Marca a todos los usuarios como desconectados
+    al iniciar la aplicación.
+    """
     global startup_done
     try:
         if not startup_done:
