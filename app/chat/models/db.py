@@ -1,4 +1,4 @@
-# Módulo de acceso a la base de datos para la aplicación de chat
+# Módulo de acceso a la base de datos para la aplicación
 from app import mysql, flask_bcrypt
 from contextlib import contextmanager
 import logging
@@ -7,7 +7,6 @@ from datetime import datetime
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Gestión del pool de conexiones a la base de datos
 @contextmanager
 def get_db_cursor():
     """

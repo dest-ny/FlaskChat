@@ -1,4 +1,4 @@
-# Controlador principal de rutas para la aplicación de chat
+# Controlador principal de rutas para la aplicación
 from app import app
 from flask import render_template, session, url_for, request, redirect, flash, jsonify
 from app.chat.models.db import *
