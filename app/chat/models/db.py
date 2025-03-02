@@ -1,4 +1,8 @@
 # Módulo de acceso a la base de datos para la aplicación de chat
+from typing import Generator, Any, Union
+
+from pymysql.cursors import Cursor
+
 from app import mysql, flask_bcrypt
 from contextlib import contextmanager
 import logging
@@ -7,49 +11,59 @@ from datetime import datetime
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Gestión del pool de conexiones a la base de datos
+# Gestión del pool de conexiones a la base de datos.
 @contextmanager
-def get_db_cursor():
+def get_db_cursor() -> Generator[Any, Any, None]:
     """
     Administrador de contexto para obtener un cursor de base de datos.
     Maneja automáticamente la apertura y cierre de conexiones, así como
     las transacciones (commit/rollback).
+
+    Returns:
+        Generator[Any, Any, None]: Un generador que proporciona un cursor de la base de datos.
+
+    Raises:
+        mysql.connector.Error: Si ocurre un error en la base de datos.
+        RuntimeError: Si se produce un error inesperado.
     """
+
     conn = None
     cur = None
     try:
         conn = mysql.get_db()
         cur = conn.cursor()
         yield cur
-        # Auto-commit para operaciones exitosas
+
+        # Auto-commit para operaciones exitosas.
         conn.commit()
     except Exception as e:
         logger.error(f"Database error: {e}", exc_info=True)
         if conn:
-            conn.rollback()  # Revertir cambios en caso de error
+            conn.rollback()  # Revertir cambios en caso de error.
         raise
     finally:
-        # Asegurar que el cursor se cierre incluso si ocurre una excepción
+        # Asegurar que el cursor se cierre incluso si ocurre una excepción.
         if cur:
             cur.close()
 
-def db_insert(sql, args):
+
+def db_insert(sql: str, args: tuple) -> None:
     """
     Función genérica para insertar datos en la base de datos.
     
     Args:
-        sql (str): Consulta SQL con marcadores de posición
-        args (tuple): Valores para los marcadores de posición
+        sql (str): Consulta SQL con marcadores de posición.
+        args (tuple): Valores para los marcadores de posición.
     """
     try:
         with get_db_cursor() as cur:
             cur.execute(sql, args)
-            # No es necesario hacer commit aquí, se maneja en el administrador de contexto
+            # No es necesario hacer commit aquí, se maneja en el administrador de contexto.
     except Exception as e:
         logger.error(f"Database insertion error: {e}", exc_info=True)
 
 
-def username_exists(user):
+def username_exists(user: str) -> bool:
     """
     Verifica si un nombre de usuario ya existe en la base de datos.
     
@@ -68,7 +82,8 @@ def username_exists(user):
         logger.error(f"Error checking if {user} exists: {e}", exc_info=True)
         return False
 
-def validate_credentials(user, password):
+
+def validate_credentials(user: str, password: str) -> dict[str, Union[int, str]]:
     """
     Valida las credenciales de un usuario para el inicio de sesión.
     
@@ -77,7 +92,9 @@ def validate_credentials(user, password):
         password (str): Contraseña sin encriptar
         
     Returns:
-        dict: Datos del usuario si las credenciales son válidas, diccionario vacío en caso contrario
+        dict[str, Union[int, str]]:
+        Diccionario con los datos del usuario si las credenciales son válidas,
+        diccionario vacío en caso contrario.
     """
     try:
         with get_db_cursor() as cur:
@@ -91,7 +108,8 @@ def validate_credentials(user, password):
         logger.error(f"Error validating password for {user}: {e}", exc_info=True)
         return {}
 
-def register_user(user, password):
+
+def register_user(user: str, password: str) -> None:
     """
     Registra un nuevo usuario en la base de datos.
     
@@ -102,7 +120,8 @@ def register_user(user, password):
     hashedpw = flask_bcrypt.generate_password_hash(password).decode('utf-8')
     db_insert("INSERT INTO users(name, password) VALUES (%s, %s)", (user, hashedpw))
 
-def store_message(user, message):
+
+def store_message(user: str, message: str) -> dict[str, Union[int, str]]:
     """
     Almacena un mensaje enviado por un usuario en la base de datos.
     
@@ -119,7 +138,7 @@ def store_message(user, message):
             res = cur.fetchone()
             if res:
                 cur.execute("INSERT INTO messages (sender, content) VALUES (%s, %s)", (res['id'], message))
-                # Obtener el mensaje insertado con fecha formateada
+                # Obtener el mensaje insertado con fecha formateada.
                 cur.execute("""
                     SELECT sender, name, content, DATE_FORMAT(timestamp, '%k:%i | %d/%m/%Y') AS fecha_formateada 
                     FROM users JOIN messages on(users.id = sender) 
@@ -127,7 +146,7 @@ def store_message(user, message):
                 """)
                 message = cur.fetchone()
                 if message:
-                    # Decodificar el contenido si está en formato bytes
+                    # Decodificar el contenido si está en formato bytes.
                     if isinstance(message['content'], bytes):
                         message['content'] = message['content'].decode('utf-8')
                     return message
@@ -135,7 +154,8 @@ def store_message(user, message):
         logger.error(f"Error saving message: {e}", exc_info=True)
     return {}
 
-def get_messages(limit=50, offset=0):
+
+def get_messages(limit: int = 50, offset: int = 0) -> Union[list[Any, Any], Any]:
     """
     Obtiene mensajes del chat con paginación.
     
@@ -167,6 +187,7 @@ def get_messages(limit=50, offset=0):
         logger.error(f"Error fetching messages: {e}", exc_info=True)
         return {}
 
+
 def get_usuarios_online():
     """
     Obtiene la lista de usuarios conectados actualmente.
@@ -183,6 +204,7 @@ def get_usuarios_online():
         logger.error(f"Error fetching online users: {e}", exc_info=True)
         return {}
 
+
 def db_start():
     """
     Inicializa la base de datos al iniciar la aplicación.
@@ -194,6 +216,7 @@ def db_start():
             # No es necesario hacer commit aquí, se maneja en el administrador de contexto
     except Exception as e:
         logger.error(f"Error updating user status: {e}", exc_info=True)
+
 
 def get_usuario(id=None, name=None):
     """
@@ -220,6 +243,7 @@ def get_usuario(id=None, name=None):
         logger.error(f"Error fetching user: {e}", exc_info=True)
         return {}
 
+
 def set_online_status(name, status):
     """
     Actualiza el estado de conexión de un usuario.
@@ -234,7 +258,8 @@ def set_online_status(name, status):
             # No es necesario hacer commit aquí, se maneja en el administrador de contexto
     except Exception as e:
         logger.error(f"Error updating user status: {e}", exc_info=True)
-        
+
+
 def db_timeout_user(id, time):
     """
     Banea a un usuario hasta una fecha específica.
@@ -249,6 +274,7 @@ def db_timeout_user(id, time):
             # No es necesario hacer commit aquí, se maneja en el administrador de contexto
     except Exception as e:
         logger.error(f"Error updating banned_until: {e}", exc_info=True)
+
 
 def db_get_info():
     """
@@ -275,7 +301,8 @@ def db_get_info():
     except Exception as e:
         logger.error(f"Error fetching database info: {e}", exc_info=True)
         return {"users": 0, "messages": 0}
-    
+
+
 def db_search_users(termino):
     """
     Busca usuarios por nombre.
@@ -302,6 +329,7 @@ def db_search_users(termino):
         logger.error(f"Error fetching users: {e}", exc_info=True)
         return {}
 
+
 def db_delete_all_messages():
     """
     Elimina todos los mensajes de la base de datos.
@@ -313,6 +341,7 @@ def db_delete_all_messages():
             # No es necesario hacer commit aquí, se maneja en el administrador de contexto
     except Exception as e:
         logger.error(f"Error deleting messages: {e}", exc_info=True)
+
 
 def db_change_role(user_id, new_role):
     """
@@ -334,6 +363,7 @@ def db_change_role(user_id, new_role):
         logger.error(f"Error changing role: {e}", exc_info=True)
         return False
 
+
 def db_unban_user(user_id):
     """
     Desbanea a un usuario.
@@ -351,4 +381,4 @@ def db_unban_user(user_id):
             return True
     except Exception as e:
         logger.error(f"Error unbanning user: {e}", exc_info=True)
-        return False    
+        return False
