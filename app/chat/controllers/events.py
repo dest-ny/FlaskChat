@@ -8,7 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 @socketio.on('connect')
-def conectado() -> None:
+def conectado():
     """
     Manejador del evento de conexión de Socket.IO.
     Se ejecuta cuando un usuario se conecta al chat.
@@ -35,7 +35,7 @@ def conectado() -> None:
         logger.error(f"Error in connect event: {e}", exc_info=True)
     
 @socketio.on('disconnect')
-def desconectado() -> None:
+def desconectado():
     """
     Manejador del evento de desconexión de Socket.IO.
     Se ejecuta cuando un usuario se desconecta del chat.
@@ -60,7 +60,7 @@ def desconectado() -> None:
         logger.error(f"Error in disconnect event: {e}", exc_info=True)
     
 @socketio.on("mensaje")
-def recibir_mensaje(msg: str) -> None:
+def recibir_mensaje(msg: str):
     """
     Manejador del evento de mensaje de Socket.IO.
     Se ejecuta cuando un usuario envía un mensaje al chat.
@@ -78,7 +78,7 @@ def recibir_mensaje(msg: str) -> None:
         logger.error(f"Error in mensaje event: {e}", exc_info=True)
     
 @socketio.on("timeout_user")
-def timeout_user(data: dict) -> None:
+def timeout_user(data: dict):
     """
     Manejador del evento para banear temporalmente a un usuario.
     Solo puede ser ejecutado por moderadores (role >= 5) contra usuarios de menor rango.
@@ -130,7 +130,7 @@ def timeout_user(data: dict) -> None:
         logger.error(f"Error in timeout_user event: {e}", exc_info=True)
 
 @socketio.on("clear_messages")
-def clear_messages() -> None:
+def clear_messages():
     """
     Manejador del evento para borrar todos los mensajes del chat.
     Solo puede ser ejecutado por administradores (role >= 10).
