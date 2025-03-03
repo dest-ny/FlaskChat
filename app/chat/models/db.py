@@ -47,7 +47,6 @@ def db_insert(sql, args):
     except Exception as e:
         logger.error(f"Database insertion error: {e}", exc_info=True)
 
-
 def username_exists(user):
     """
     Verifica si un nombre de usuario ya existe en la base de datos.

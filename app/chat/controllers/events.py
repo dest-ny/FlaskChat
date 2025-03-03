@@ -8,7 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 @socketio.on('connect')
-def conectado():
+def conectado() -> None:
     """
     Manejador del evento de conexión de Socket.IO.
     Se ejecuta cuando un usuario se conecta al chat.
@@ -35,7 +35,7 @@ def conectado():
         logger.error(f"Error in connect event: {e}", exc_info=True)
     
 @socketio.on('disconnect')
-def desconectado():
+def desconectado() -> None:
     """
     Manejador del evento de desconexión de Socket.IO.
     Se ejecuta cuando un usuario se desconecta del chat.
@@ -60,11 +60,11 @@ def desconectado():
         logger.error(f"Error in disconnect event: {e}", exc_info=True)
     
 @socketio.on("mensaje")
-def recibir_mensaje(msg):
+def recibir_mensaje(msg: str) -> None:
     """
     Manejador del evento de mensaje de Socket.IO.
     Se ejecuta cuando un usuario envía un mensaje al chat.
-    Almacena el mensaje en la BD y lo reenvía a todos los usuarios.
+    Almacena el mensaje en la BDD y lo reenvía a todos los usuarios.
     
     Args:
         msg (str): Contenido del mensaje enviado por el usuario
@@ -78,15 +78,15 @@ def recibir_mensaje(msg):
         logger.error(f"Error in mensaje event: {e}", exc_info=True)
     
 @socketio.on("timeout_user")
-def timeout_user(data):
+def timeout_user(data: dict) -> None:
     """
     Manejador del evento para banear temporalmente a un usuario.
     Solo puede ser ejecutado por moderadores (role >= 5) contra usuarios de menor rango.
     
     Args:
-        data (dict): Diccionario con los datos del baneo
-            - user (int): ID del usuario a banear
-            - duration (int): Duración del baneo en minutos, -1 para baneo permanente
+        data (dict): Diccionario con los datos del baneo.
+            - user (int): ID del usuario a banear.
+            - duration (int): Duración del baneo en minutos, -1 para baneo permanente.
     """
     try:
         if 'nombre' not in session:
@@ -96,7 +96,7 @@ def timeout_user(data):
         if not usuario:
             return
             
-        # Verifica que el usuario tenga permisos suficientes para banear
+        # Verifica que el usuario tenga permisos suficientes para banear.
         if session['role'] >= 5 and session['role'] > usuario['role']:
             time_until = 0
             mensaje = {}
@@ -111,7 +111,7 @@ def timeout_user(data):
                         'content': f"ha sido expulsado de la sala hasta: {time_until.strftime('%d/%m/%Y - %H:%M')}",
                         }
             else:
-                # Baneo permanente
+                # Baneo permanente.
                 time_until = datetime.max
                 print(time_until)
                 mensaje = {
@@ -119,18 +119,18 @@ def timeout_user(data):
                         'name' : usuario['name'],
                         'content': f"ha sido vetado de la sala para siempre!",
                         }
-            db_timeout_user(data['user'], time_until)  # Actualiza el estado de baneo en la BD
-            set_online_status(usuario['name'], 0)  # Marca al usuario como desconectado
-            socketio.emit("force_disconnect", usuario['name'])  # Fuerza la desconexión del usuario
-            socketio.emit('estado', mensaje)  # Notifica a todos los usuarios
-            socketio.emit("usuarios_online", get_usuarios_online())  # Actualiza la lista de usuarios conectados
+            db_timeout_user(data['user'], time_until)  # Actualiza el estado de baneo en la BD.
+            set_online_status(usuario['name'], 0)  # Marca al usuario como desconectado.
+            socketio.emit("force_disconnect", usuario['name'])  # Fuerza la desconexión del usuario.
+            socketio.emit('estado', mensaje)  # Notifica a todos los usuarios.
+            socketio.emit("usuarios_online", get_usuarios_online())  # Actualiza la lista de usuarios conectados.
         else:
             logger.warning(f"Usuario {session['nombre']} ha intentado una acción con permisos insuficientes")
     except Exception as e:
         logger.error(f"Error in timeout_user event: {e}", exc_info=True)
 
 @socketio.on("clear_messages")
-def clear_messages():
+def clear_messages() -> None:
     """
     Manejador del evento para borrar todos los mensajes del chat.
     Solo puede ser ejecutado por administradores (role >= 10).
@@ -140,8 +140,8 @@ def clear_messages():
             return
             
         if session['role'] >= 10:
-            db_delete_all_messages()  # Borra todos los mensajes de la BD
-            socketio.emit("clear_messages")  # Notifica a todos los usuarios para limpiar sus chats
+            db_delete_all_messages()  # Borra todos los mensajes de la BD.
+            socketio.emit("clear_messages")  # Notifica a todos los usuarios para limpiar sus chats.
         else:
             logger.warning(f"Usuario {session['nombre']} ha intentado una acción con permisos insuficientes")
     except Exception as e:
